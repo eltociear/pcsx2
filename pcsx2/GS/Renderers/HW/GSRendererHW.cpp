@@ -1600,8 +1600,9 @@ void GSRendererHW::Draw()
 	m_copy_16bit_to_target_shuffle = false;
 	m_tex_is_fb = false;
 
-	// The rectangle of the draw
-	m_r = GSVector4i(m_vt.m_min.p.xyxy(m_vt.m_max.p)).rintersect(GSVector4i(context->scissor.in));
+	// The rectangle of the draw rounded up.
+	GSVector4 rect = m_vt.m_min.p.xyxy(m_vt.m_max.p) + GSVector4(0.0f, 0.0f, 0.5f, 0.5f);
+	m_r = GSVector4i(rect).rintersect(GSVector4i(context->scissor.in));
 
 	const bool is_split_texture_shuffle = (m_split_texture_shuffle_pages > 0);
 	if (is_split_texture_shuffle)
