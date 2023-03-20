@@ -149,6 +149,15 @@ void GSRendererHW::UpdateSettings(const Pcsx2Config::GSOptions& old_config)
 
 void GSRendererHW::VSync(u32 field, bool registers_written)
 {
+	// If the width changes, we need to kill the old targets, so they size correctly.
+	if (m_regs->PMODE.EN1 && (m_regs->DISP[0].DISPFB.FBW != PCRTCDisplays.PCRTCDisplays[0].FBW))
+	{
+		m_tc->InvalidateVideoMemType(GSTextureCache::RenderTarget, PCRTCDisplays.PCRTCDisplays[0].Block());
+	}
+	if (m_regs->PMODE.EN2 && (m_regs->DISP[1].DISPFB.FBW != PCRTCDisplays.PCRTCDisplays[1].FBW))
+	{
+		m_tc->InvalidateVideoMemType(GSTextureCache::RenderTarget, PCRTCDisplays.PCRTCDisplays[1].Block());
+	}
 	if (m_force_preload > 0)
 	{
 		m_force_preload--;
